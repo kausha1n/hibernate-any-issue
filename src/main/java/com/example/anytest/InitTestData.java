@@ -51,6 +51,7 @@ public class InitTestData {
             propertyHolderRepo.save(agePropertyHolder);
             stringPropRepo.save(nameProperty);
             integerPropRepo.save(ageProperty);
+            integerPropRepo.flush();
         };
     }
 }

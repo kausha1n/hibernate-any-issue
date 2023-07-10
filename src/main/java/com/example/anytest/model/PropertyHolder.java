@@ -3,13 +3,15 @@ package com.example.anytest.model;
 import com.example.anytest.model.properties.IntegerProperty;
 import com.example.anytest.model.properties.Property;
 import com.example.anytest.model.properties.StringProperty;
-import jakarta.persistence.Table;
-import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.*;
+
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "property_holder")
@@ -22,17 +24,14 @@ public class PropertyHolder {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "property_type", insertable = false, updatable = false)
+    @Column(name = "property_type")
     private String propertyType;
 
-    @Any
-    @AnyKeyJavaClass(Long.class)
-    @AnyDiscriminator(DiscriminatorType.STRING)
-    @AnyDiscriminatorValues({
-            @AnyDiscriminatorValue(discriminator = "I", entity = IntegerProperty.class),
-            @AnyDiscriminatorValue(discriminator = "S", entity = StringProperty.class)
+    @Any(metaColumn = @Column(name = "property_type"))
+    @AnyMetaDef(metaType = "string", idType = "long", metaValues = {
+            @MetaValue(value = "S", targetEntity = StringProperty.class),
+            @MetaValue(value = "I", targetEntity = IntegerProperty.class)
     })
-    @Column(name = "property_type")
     @JoinColumn(name = "id", updatable = false, insertable = false)
     @Cascade(CascadeType.ALL)
     private Property property;
